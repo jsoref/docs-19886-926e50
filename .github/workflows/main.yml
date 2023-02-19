@@ -1,0 +1,19 @@
+on: push
+jobs:
+  generate-a-secret-output:
+    runs-on: ubuntu-latest
+    steps:
+      - id: sets-a-secret
+        name: Generate, mask, and output a secret
+        shell: pwsh
+        run: |
+          Set-Variable -Name TheSecret -Value (Get-Random)
+          Write-Output "::add-mask::$TheSecret"
+
+          Write-Output "secret-number=$TheSecret" >> "$GITHUB_OUTPUT"
+
+      - name: Use that secret output (protected by a mask)
+        shell: pwsh
+        run: |
+
+          Write-Output "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
